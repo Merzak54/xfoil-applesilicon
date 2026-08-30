@@ -1,0 +1,26 @@
+#=========================================================#
+# Xplot11 build options for macOS on Apple Silicon (arm64) #
+#                                                          #
+# Copy over Xfoil/plotlib/config.make before running make. #
+# Differences from the stock config.make.gfortranDP:       #
+#   * no -m64        : rejected by clang/gfortran on arm64 #
+#   * -std=legacy    : F77-isms modern gfortran rejects    #
+#   * -std=gnu89     : Xwin2.c uses K&R definitions        #
+#   * XQuartz paths  : /opt/X11 instead of /usr/X11R6      #
+#=========================================================#
+
+# Double-precision library, matching bin/Makefile_gfortran's PLTOBJ default.
+PLTLIB = libPlt.a
+
+# Trailing underscores on the C interface symbols (see Xwin.c).
+DEFINE = -DUNDERSCORE
+
+FC = gfortran
+CC = clang
+DP = -fdefault-real-8
+
+FFLAGS = -O2 $(DP) -std=legacy -fallow-argument-mismatch
+CFLAGS = -O2 $(DEFINE) -std=gnu89 -Wno-implicit-function-declaration -I/opt/X11/include
+AR = ar r
+RANLIB = ranlib
+LINKLIB = -L/opt/X11/lib -lX11

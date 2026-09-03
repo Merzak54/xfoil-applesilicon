@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RF Doc – Site Build Form</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 2rem auto; max-width: 1000px; color: #222; }
+  h1 { font-size: 1.4rem; }
+  fieldset { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 1.2rem; padding: 1rem; }
+  legend { font-weight: 600; }
+  .site { display: grid; grid-template-columns: 12rem 1fr; gap: .4rem .8rem; align-items: center; }
+  .site label { text-align: right; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: .25rem .4rem; }
+  th:first-child, td:first-child { text-align: right; white-space: nowrap; width: 12rem; }
+  input[type=text], textarea { width: 100%; box-sizing: border-box; padding: .3rem; }
+  textarea { height: 5rem; }
+  .actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; }
+  button { padding: .45rem 1rem; cursor: pointer; }
+  .primary { background: #1a63c9; color: #fff; border: 0; border-radius: 4px; font-weight: 600; }
+  .flash { background: #fff6c8; border: 1px solid #e5c95a; padding: .5rem .8rem; border-radius: 4px; }
+</style>
+</head>
+<body>
+<h1>RF Doc – Site Build Form</h1>
+
+{% with msgs = get_flashed_messages() %}
+  {% for m in msgs %}<p class="flash">{{ m }}</p>{% endfor %}
+{% endwith %}
+
+<form method="post" enctype="multipart/form-data">
+  <fieldset>
+    <legend>Load / reset</legend>
+    <div class="actions">
+      <input type="file" name="file" accept=".xlsx,.json">
+      <button type="submit" name="load" value="1">Load RF Doc / JSON</button>
+      <button type="submit" name="example" value="1">BM1183 example</button>
+      <button type="submit" name="clear" value="1">Clear</button>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Site</legend>
+    <div class="site">
+      {% for key, (label, _) in site_fields.items() %}
+        <label for="{{ key }}">{{ label }}</label>
+        {% if key == "comments" %}
+          <textarea id="{{ key }}" name="{{ key }}">{{ data[key] }}</textarea>
+        {% else %}
+          <input type="text" id="{{ key }}" name="{{ key }}" value="{{ data[key] }}">
+        {% endif %}
+      {% endfor %}
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Sectors</legend>
+    <table>
+      <thead><tr><th></th>{% for s in sectors %}<th>Sector {{ s }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for key, (label, _) in sector_fields.items() %}
+        <tr>
+          <th>{{ label }}</th>
+          {% for s in sectors %}
+            <td><input type="text" name="{{ s }}.{{ key }}" value="{{ data.sectors[s][key] }}"></td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </fieldset>
+
+  <div class="actions">
+    <button type="submit" name="generate" value="1" class="primary">Generate RF Doc (.xlsx)</button>
+  </div>
+</form>
+</body>
+</html>

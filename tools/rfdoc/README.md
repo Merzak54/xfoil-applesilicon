@@ -4,9 +4,19 @@ Fills the `Site Build Form` sheet (`RFDOC_template.xlsx`, layout taken from
 `BM1183_RFDOC.xlsx`) with site and per-sector RF data and writes
 `<SITE_ID>_RFDOC.xlsx`. Styles, merged cells and the logo are preserved.
 
-```sh
-pip install openpyxl pillow
+## Web application
 
+```sh
+pip install -r requirements.txt
+python3 webapp.py               # open http://127.0.0.1:5000
+```
+
+Browser form (pre-filled with the BM1183 values): edit, click **Generate RF Doc**
+to download `<SITE_ID>_RFDOC.xlsx`, or upload an existing RF Doc / JSON to pre-fill.
+
+## Command line
+
+```sh
 python3 rfdoc.py --gui                     # Tk form, pre-filled with the BM1183 values
 python3 rfdoc.py                           # same, as terminal prompts
 python3 rfdoc.py --example > site.json     # edit, then:
